@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const app = express()
 const port = 3100
 
@@ -167,8 +168,8 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res, next) => {
-    makeConnection()
-    closeConnection()
+    // makeConnection()
+    // closeConnection()
     res.status(200).json({
       statusMessage: "Success, this works node"
     });
