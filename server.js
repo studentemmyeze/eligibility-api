@@ -9,22 +9,40 @@ const crypto = require('crypto')
 const mysql = require('mysql');
 
 var fs = require('fs');
-
-host = process.env.HOST;
-user = process.env.USER;
-password = process.env.PASSWORD;
-database = process.env.DATABASE;
+var requestCount = 0
+host = '';
+user = '';
+password = '';
+database = '';
 pythonUrl = "";
 apiKey= "";
 appSecret = "";
 tokenUrl = "";
 pushQualifiedUrl = "";
 type22 = '';
-console.log("===========")
-console.log("Done reading settings variables");
-console.log("===========")
 
 
+
+try {
+
+    host = process.env.HOST
+    user = process.env.USER;
+    password = process.env.PASSWORD;
+    database = process.env.DATABASE;
+    pythonUrl = process.env.PYTHONURL;
+    // apiKey = process.env.APIKEY;
+    // appSecret = process.env.APPSECRET;
+    // tokenUrl = process.env.TOKENURL;
+    // pushQualifiedUrl = process.env.PUSHQUALIFIEDURL;
+    console.log("===========")
+    console.log("Done reading settings variables", host, user);
+    console.log("===========")
+  
+  }
+  catch(e) {
+    console.log('Error:', e.stack);
+  }
+  
   var isConnectedToDB = false
   var lastOpStat = {}
   
@@ -142,7 +160,7 @@ console.log("===========")
   
     }
   
-    console.log(sql)
+    // console.log(sql)
     const result = await doQuery(sql)
     return result
   
@@ -166,7 +184,7 @@ app.use((req, res, next) => {
 
   next();
 });
-
+// makeConnection()
 app.get('/', (req, res, next) => {
     // makeConnection()
     // closeConnection()
@@ -182,19 +200,19 @@ async function onWhatIsSent(req, res) {
 
   const type = "SAVEUTMESTATUS"
   var message = ""
+  requestCount += 1
   const regNo = req.query.regNo
   var projectM_temp = []
-  const answer = 1
   await getStudentRegistrationInfo(regNo, type, projectM_temp)
-  console.log('answer::', answer)
+  const answer = projectM_temp.length > 0 ? 1 : 0
+//   console.log('answer::', answer)
 //   closeConnection()
   if (answer) {
 
       res.status(200).json({
         studentRecord: projectM_temp,
         message: "student record found",
-
-
+        requestcount: requestCount,
 
         status: 200
       });
@@ -205,6 +223,7 @@ async function onWhatIsSent(req, res) {
     res.status(202).json({
       studentRecord: projectM_temp,
       message: "student record not found, change to us",
+      requestcount: requestCount,
 
       status: 202
     });
@@ -273,7 +292,18 @@ async function getStudentRegistrationInfo(regNo, type, projectM) {
 
 
 
+function exitHandler(options, err) {
+    connection.end();
+    if (options.cleanup)
+        console.log('clean');
+    if (err)
+        console.log(err.stack);
+    if (options.exit)
+        process.exit();
+}
 
+//do something when app is closing
+process.on('exit', exitHandler.bind(null, {cleanup: true}));
 
 
 console.log("running..")
