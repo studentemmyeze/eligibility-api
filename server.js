@@ -23,7 +23,7 @@ type22 = '';
 
 
 try {
-    var data = fs.readFileSync('settings.txt', 'utf8');
+    var data = fs.readFileSync('/etc/secrets/settings.txt', 'utf8');
     const dataList = data.toString().split('\r\n');
     
     host = dataList[0].toString();
