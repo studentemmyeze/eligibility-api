@@ -238,6 +238,7 @@ async function getStudentRegistrationInfo(regNo, type, projectM) {
       const r1 = await recordsFromATableGrab(type,regNo,tableName,true)
       console.log('...retrieved student record', r1)
       const toSend = r1.length < 1  ? undefined : r1
+      if (r1.length < 1) {
       if (type === "DE") {
         
       }
@@ -280,6 +281,7 @@ async function getStudentRegistrationInfo(regNo, type, projectM) {
           return error
           }
   
+      }
       }
   
         // return toSend2
