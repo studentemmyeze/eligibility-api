@@ -9,41 +9,21 @@ const mysql = require('mysql');
 
 var fs = require('fs');
 
-host = '';
-user = '';
-password = '';
-database = '';
+host = process.env.HOST;
+user = process.env.USER;
+password = process.env.PASSWORD;
+database = process.env.DATABASE;
 pythonUrl = "";
 apiKey= "";
 appSecret = "";
 tokenUrl = "";
 pushQualifiedUrl = "";
 type22 = '';
+console.log("===========")
+console.log("Done reading settings variables");
+console.log("===========")
 
 
-
-try {
-    var data = fs.readFileSync('/etc/secrets/settings.txt', 'utf8');
-    const dataList = data.toString().split('\r\n');
-    
-    host = dataList[0].toString();
-    user = dataList[1].toString();
-    password = dataList[2].toString();
-    database = dataList[3].toString();
-    pythonUrl = dataList[4].toString();
-    apiKey = dataList[5].toString();
-    appSecret = dataList[6].toString();
-    tokenUrl = dataList[7].toString();
-    pushQualifiedUrl = dataList[8].toString();
-    console.log("===========")
-    console.log("Done reading settings variables");
-    console.log("===========")
-  
-  }
-  catch(e) {
-    console.log('Error:', e.stack);
-  }
-  
   var isConnectedToDB = false
   var lastOpStat = {}
   
