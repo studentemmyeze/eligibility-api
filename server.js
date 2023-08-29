@@ -57,7 +57,8 @@ try {
   
 //   database main functions
   async function makeConnection() {
-    connection.connect(function(err) {
+      if (!isConnectedToDB) {
+          connection.connect(function(err) {
       if (err) {
         return console.error('error: ' + err.message);
       }
@@ -65,15 +66,21 @@ try {
       console.log('Connected to the MySQL server.');
       isConnectedToDB = true;
     });
+      }
+    
   }
   
   async function closeConnection() {
-    connection.end(function(err) {
+      if (isConnectedToDB) {
+          connection.end(function(err) {
       if (err) {
         return console.log('error:' + err.message);
       }
       console.log('Close the database connection.');
+        isConnectedToDB = false;
     });
+      }
+    
   }
 
   async function doQuery(queryToDo) {
